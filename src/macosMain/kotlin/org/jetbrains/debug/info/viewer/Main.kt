@@ -17,12 +17,40 @@
 package org.jetbrains.debug.info.viewer
 
 import kotlinx.cinterop.*
+import org.jetbrains.commandline.CommandlineOption
 import llvm.*
+import org.jetbrains.commandline.BaseCommandlineParser
 
+class ViewerCommandlineParser {
+    val bitcode:String
+        get() = options[bitcodeFile]!!
+    val prefix:String
+        get() = options[functionPrefix]!!
+
+    private val options = mutableMapOf<CommandlineOption, String> ()
+    private val oneValue = fun (op:CommandlineOption, args:Array<String>){
+        options[op] = args[0]
+    }
+    private val bitcodeFile = CommandlineOption(longOptionName = "--bitcode-file", shortOptionName = "-b", numberOfParameters = 1, parse = oneValue)
+    private val functionPrefix = CommandlineOption(longOptionName = "--prefix", shortOptionName = "-p", numberOfParameters = 1, parse = oneValue)
+
+    fun parse(args:Array<String>) {
+        BaseCommandlineParser(options = listOf(bitcodeFile, functionPrefix), freeArgument = ::unsupported, noArguments = ::help).parse(args)
+    }
+
+    private fun help() {
+
+    }
+
+    private fun unsupported(argument: String) {
+
+    }
+}
 
 fun main(args: Array<String>) {
-    val fileName = args[0]
-    val functionName = args[1]
+    val parser = ViewerCommandlineParser().also { it.parse(args) }
+    val fileName = parser.bitcode
+    val functionName = parser.prefix
     memScoped {
         val messageBuffer = allocPointerTo<ByteVar>()
         val buffer = alloc<LLVMMemoryBufferRefVar>()
