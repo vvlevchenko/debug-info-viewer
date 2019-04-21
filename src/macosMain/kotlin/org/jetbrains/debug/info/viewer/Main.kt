@@ -22,7 +22,7 @@ import llvm.*
 
 fun main(args: Array<String>) {
     val fileName = args[0]
-    val functionName = "kfun:foo" // configurable parameter
+    val functionName = args[1]
     memScoped {
         val messageBuffer = allocPointerTo<ByteVar>()
         val buffer = alloc<LLVMMemoryBufferRefVar>()
