@@ -99,13 +99,13 @@ fun main(args: Array<String>) {
         buildString {
             appendln("digraph ${dia.name} {")
             appendln("node [labeljust=l, shape=record, style=filled, color=red, fillcolor=gray, fontcolor=black]")
-            dia.nodes.forEach {
+            dia.nodes.forEach { subgraph ->
                 appendln("subgraph {")
-                appendln("\"${it.key}\" -> prologue") // specific
-                (it.value as Graph).nodes.forEach {
-                    appendln("${it.key} [ label = \"{${it.key}|${it.value.attributes["label"]?.value?.joinToString(separator = "|")}}\"]")
-                    if (it.value.edges.isNotEmpty())
-                        appendln("${it.key} -> ${it.value.edges.joinToString(separator = ",")}")
+                appendln("\"${subgraph.key}\" -> prologue") // specific
+                (subgraph.value as Graph).nodes.forEach { node ->
+                    appendln("${node.key} [ label = \"{${node.key}|${node.value.attributes["label"]?.value?.joinToString(separator = "|")}}\"]")
+                    if (node.value.edges.isNotEmpty())
+                        appendln("${node.key} -> ${node.value.edges.joinToString(separator = ",")}")
                 }
 
                 appendln("}")
@@ -120,5 +120,5 @@ fun main(args: Array<String>) {
 private val LLVMOpcode?.beauty_name: String?
     get() = this?.run { name.drop(4).decapitalize() }
 val DILocationRef?.encoded: String?
-    get() = this?.run{"${scope.subprogram.name} ${scope.file.name}|$line:$column"}
+    get() = this?.run{"${scope.subprogram.linkageName}|${scope.file.name}|$line:$column"}
 
