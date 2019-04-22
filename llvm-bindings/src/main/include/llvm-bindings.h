@@ -35,6 +35,8 @@ DILocationRef LLVMInstructionGetDiLocation(LLVMValueRef);
 unsigned LLVMLocationGetLine(DILocationRef);
 unsigned LLVMLocationGetColumn(DILocationRef);
 DILocalScopeRef LLVMLocationGetScope(DILocationRef);
+DISubprogramRef LLVMLocationGetSubprogram(DILocationRef);
+const char *LLVMSubprogramGetLinkageName(DISubprogramRef);
 DILocationRef LLVMLocationGetInlinedAt(DILocationRef);
 DIFileRef LLVMScopeGetFile(DILocalScopeRef);
 const char *LLVMFileGetFilename(DIFileRef);
