@@ -50,8 +50,17 @@ internal val DILocalScopeRef?.file: DIFileRef?
     get() = this?.run { LLVMScopeGetFile(this) }
 
 internal val LLVMValueRef?.opcode : LLVMOpcode?
-    get() = LLVMGetInstructionOpcode(this)
+    get() = this?.run {LLVMGetInstructionOpcode(this)}
 
+internal val DILocalScopeRef?.subprogram : DISubprogramRef?
+    get() = this?.run{ LLVMLocalScopeGetSubprogram(this)}
+
+
+internal val DISubprogramRef?.name : String?
+    get() = this?.run{ LLVMSubprogramGetName(this)?.toKString()}
+
+internal val DISubprogramRef?.linkageName : String?
+    get() = this?.run{ LLVMSubprogramGetLinkageName(this)?.toKString() }
 
 internal val CPointerVarOf<CPointer<ByteVar>>.str: String
     get() = value?.toKString() ?: "<null>"

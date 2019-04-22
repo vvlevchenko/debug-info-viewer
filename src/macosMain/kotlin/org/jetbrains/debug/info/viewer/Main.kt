@@ -120,5 +120,5 @@ fun main(args: Array<String>) {
 private val LLVMOpcode?.beauty_name: String?
     get() = this?.run { name.drop(4).decapitalize() }
 val DILocationRef?.encoded: String?
-    get() = this?.run{"${scope.file.name}|$line:$column"}
+    get() = this?.run{"${scope.subprogram.name} ${scope.file.name}|$line:$column"}
 

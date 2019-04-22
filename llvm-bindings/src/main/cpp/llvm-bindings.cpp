@@ -69,8 +69,12 @@ extern "C" {
     return llvm::wrap(llvm::unwrap(ref)->getScope());
   }
 
-  DISubprogramRef LLVMLocationGetSubprogram(DILocationRef ref) {
+  DISubprogramRef LLVMLocalScopeGetSubprogram(DILocalScopeRef ref) {
     return llvm::wrap(llvm::unwrap(ref)->getSubprogram());
+  }
+
+  const char *LLVMSubprogramGetName(DISubprogramRef ref) {
+    return llvm::unwrap(ref)->getName().data();
   }
 
   const char *LLVMSubprogramGetLinkageName(DISubprogramRef ref) {
