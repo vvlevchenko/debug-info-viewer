@@ -31,24 +31,6 @@ DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DIFile, DIFileRef)
 DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DISubprogram, DISubprogramRef)
 //DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DIScope, DIScopeRef)
 }
-//#define DI_DEBUG
-#ifdef DI_DEBUG
-namespace {
-  inline const char * fileName(llvm::DIFile *file) {
-    if (file == NULL) {
-      return "no file";
-    }
-    auto fileName = file->getFilename();
-    return fileName.str().c_str();
-  }
-}
-#define return(x) do {\
-  printf("(%s: %d) " #x " %s\n", __FILE__, __LINE__, (x));\
-  return x;\
-} while (0)
-#else
-#define return(x) return x
-#endif
 
 extern "C" {
   DILocationRef LLVMInstructionGetDiLocation(LLVMValueRef ref) {
@@ -94,29 +76,20 @@ extern "C" {
   DIFileRef LLVMScopeGetFile(DILocalScopeRef ref) {
     auto scope = llvm::unwrap(ref);
     if (llvm::isa<llvm::DISubprogram>(scope)) {
-      auto subprogram = llvm::dyn_cast<llvm::DISubprogram>(reinterpret_cast<llvm::DILocalScope *>(ref));
-#ifdef DI_DEBUG
-      printf("subprogram: %s(%s) %s(scopeFile:%s):%d\n",
-      subprogram->getName().str().c_str(),
-      subprogram->getLinkageName().str().c_str(),
-      fileName(subprogram->getFile()),
-      fileName(subprogram->getScope().resolve()->getFile()),
-      subprogram->getLine());
-#endif
-      return llvm::wrap(subprogram->getFile());
+      auto subprogram = scope->getSubprogram();
+      return llvm::wrap(subprogram->getUnit()->getFile());
     }
     return llvm::wrap(scope->getFile());
   }
 
   const char *LLVMFileGetFilename(DIFileRef ref) {
     auto mdstring = llvm::unwrap(ref)->getFilename();
-    auto cstring = mdstring.str().c_str();
-    return(cstring);
+    return mdstring.data();
   }
 
   const char *LLVMFileGetDirectory(DIFileRef ref) {
       auto mdstring = llvm::unwrap(ref)->getDirectory();
-      return mdstring.str().c_str();
+      return mdstring.data();
   }
 } /* extern "C" */
 

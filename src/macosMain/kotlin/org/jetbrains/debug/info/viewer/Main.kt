@@ -96,8 +96,6 @@ fun main(args: Array<String>) {
                 }
             }
         }
-        LLVMDisposeModule(module.value)
-        LLVMDisposeMemoryBuffer(buffer.value)
         buildString {
             appendln("digraph ${dia.name} {")
             appendln("node [labeljust=l, shape=record, style=filled, color=red, fillcolor=gray, fontcolor=black]")
@@ -114,6 +112,8 @@ fun main(args: Array<String>) {
             }
             appendln("}")
         }.also (::println)
+        LLVMDisposeModule(module.value)
+        LLVMDisposeMemoryBuffer(buffer.value)
     }
 }
 
