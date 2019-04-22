@@ -20,7 +20,7 @@ fun digraph(name: String, body: Digraph.() -> Unit) = Digraph(name).also(body)
 
 class Digraph(name :String):Graph(name)
 
-open class Graph(name: String):Node(name) {
+open class Graph(name: String, val entry: String? = null):Node(name) {
     var nodeCounter = 0
     val nodes = mutableMapOf<String, Node>()
     fun add(node:Node) = nodes.put(node.name, node)
@@ -37,6 +37,6 @@ class Attribute(val id: String) {
     var value = mutableListOf<String>()
 }
 
-fun Graph.graph(name: String, body: Graph.() -> Unit) = this.add(Graph(name).also(body))
+fun Graph.graph(name: String, entry:String? = null, body: Graph.() -> Unit) = this.add(Graph(name, entry).also(body))
 fun Graph.node(id : String, body: Node.() -> Unit) = this.add(Node(id).also(body))
 fun Node.attribute(id: String, body:Attribute.() -> Unit) = this.add(Attribute(id).also(body))

@@ -68,7 +68,8 @@ fun main(args: Array<String>) {
 
         val dia = digraph("zzz") {
             filtered.forEach {
-                graph(it.name ?: "function-${nodeCounter++}") {
+
+                graph(it.name ?: "function-${nodeCounter++}", LLVMGetEntryBasicBlock(it)?.name ?: "prologue") {
                     BasicBlockIterator(it).forEach { bb ->
                         node(bb.name ?: "bb-${nodeCounter++}") {
                             attribute("label") {
@@ -101,7 +102,7 @@ fun main(args: Array<String>) {
             appendln("node [labeljust=l, shape=record, style=filled, color=red, fillcolor=gray, fontcolor=black]")
             dia.nodes.forEach { subgraph ->
                 appendln("subgraph {")
-                appendln("\"${subgraph.key}\" -> prologue") // specific
+                appendln("\"${subgraph.key}\" -> ${(subgraph.value as Graph).entry}")
                 (subgraph.value as Graph).nodes.forEach { node ->
                     appendln("${node.key} [ label = \"{${node.key}|${node.value.attributes["label"]?.value?.joinToString(separator = "|")}}\"]")
                     if (node.value.edges.isNotEmpty())
