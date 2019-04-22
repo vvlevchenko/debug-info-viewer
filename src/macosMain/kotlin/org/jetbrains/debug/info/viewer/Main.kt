@@ -49,13 +49,11 @@ class ViewerCommandlineParser {
 
 fun main(args: Array<String>) {
     val parser = ViewerCommandlineParser().also { it.parse(args) }
-    val fileName = parser.bitcode
-    val functionName = parser.prefix
     memScoped {
         val messageBuffer = allocPointerTo<ByteVar>()
         val buffer = alloc<LLVMMemoryBufferRefVar>()
 
-        if (!LLVMCreateMemoryBufferWithContentsOfFile(fileName, buffer.ptr, messageBuffer.ptr).isOk) {
+        if (!LLVMCreateMemoryBufferWithContentsOfFile(parser.bitcode, buffer.ptr, messageBuffer.ptr).isOk) {
             error(messageBuffer.str)
         }
 
@@ -64,7 +62,7 @@ fun main(args: Array<String>) {
             error(messageBuffer.str)
         }
 
-        val filtered = FunctionIterator(module.value!!).asSequence().asIterable().filter { it.name?.startsWith(functionName) ?: false}
+        val filtered = FunctionIterator(module.value!!).asSequence().asIterable().filter { it.name?.startsWith(parser.prefix) ?: false}
 
         val dia = digraph("zzz") {
             filtered.forEach {
