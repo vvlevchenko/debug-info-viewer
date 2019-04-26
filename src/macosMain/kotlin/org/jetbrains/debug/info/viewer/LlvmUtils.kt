@@ -18,6 +18,26 @@ package org.jetbrains.debug.info.viewer
 import kotlinx.cinterop.*
 import llvm.*
 
+internal fun MemScope.llvmMemoryBuffer(fileName:String, body:(LLVMMemoryBufferRefVar)  -> Unit) {
+    val messageBuffer = allocPointerTo<ByteVar>()
+    val buffer = alloc<LLVMMemoryBufferRefVar>()
+
+    if (!LLVMCreateMemoryBufferWithContentsOfFile(fileName, buffer.ptr, messageBuffer.ptr).isOk) {
+        error(messageBuffer.str)
+    }
+    body(buffer)
+    LLVMDisposeMemoryBuffer(buffer.value)
+}
+
+internal fun MemScope.llvmParseBitcode(buffer:LLVMMemoryBufferRefVar, body: (LLVMModuleRefVar) -> Unit) {
+    val messageBuffer = allocPointerTo<ByteVar>()
+    val module = alloc<LLVMModuleRefVar>()
+    if (!LLVMParseBitcode(buffer.value, module.ptr, messageBuffer.ptr).isOk) {
+        error(messageBuffer.str)
+    }
+    body(module)
+    LLVMDisposeModule(module.value)
+}
 
 internal val LLVMBool.isOk: Boolean
     get() = (this == 0)
