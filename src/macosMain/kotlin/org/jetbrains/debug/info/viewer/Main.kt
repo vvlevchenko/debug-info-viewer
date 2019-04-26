@@ -50,8 +50,8 @@ class ViewerCommandlineParser {
 fun main(args: Array<String>) {
     val parser = ViewerCommandlineParser().also { it.parse(args) }
     memScoped {
-        llvmMemoryBuffer(parser.bitcode) {
-            llvmParseBitcode(it) { module ->
+        llvmMemoryBuffer(parser.bitcode) { buffer ->
+            llvmParseBitcode(buffer) { module ->
                 val filtered = FunctionIterator(module.value!!).asSequence().asIterable()
                     .filter { it.name?.startsWith(parser.prefix) ?: false }
 
