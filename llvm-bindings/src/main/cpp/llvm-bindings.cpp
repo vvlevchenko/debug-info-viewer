@@ -86,22 +86,15 @@ extern "C" {
   }
 
   DIFileRef LLVMScopeGetFile(DILocalScopeRef ref) {
-    auto scope = llvm::unwrap(ref);
-    if (llvm::isa<llvm::DISubprogram>(scope)) {
-      auto subprogram = scope->getSubprogram();
-      return llvm::wrap(subprogram->getUnit()->getFile());
-    }
-    return llvm::wrap(scope->getFile());
+    return llvm::wrap(llvm::unwrap(ref)->getFile());
   }
 
   const char *LLVMFileGetFilename(DIFileRef ref) {
-    auto mdstring = llvm::unwrap(ref)->getFilename();
-    return mdstring.data();
+    return llvm::unwrap(ref)->getFilename().data();
   }
 
   const char *LLVMFileGetDirectory(DIFileRef ref) {
-      auto mdstring = llvm::unwrap(ref)->getDirectory();
-      return mdstring.data();
+      return llvm::unwrap(ref)->getDirectory().data();
   }
 } /* extern "C" */
 
