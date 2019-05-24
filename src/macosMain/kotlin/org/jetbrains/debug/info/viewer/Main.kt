@@ -98,7 +98,7 @@ fun main(args: Array<String>) {
                             appendln(
                                 "${node.key} [ label = \"{${node.key}|${node.value.attributes["label"]?.value?.joinToString(
                                     separator = "|"
-                                )}}\"]"
+                                )?.html()}}\"]"
                             )
                             if (node.value.edges.isNotEmpty())
                                 appendln("${node.key} -> ${node.value.edges.joinToString(separator = ",")}")
