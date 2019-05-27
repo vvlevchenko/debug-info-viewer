@@ -26,11 +26,13 @@ typedef struct DILocalScope *DILocalScopeRef;
 typedef struct DIFile *DIFileRef;
 //typedef struct DIScope *DIScopeRef;
 typedef struct DISubprogram *DISubprogramRef;
+typedef struct LLVMCallBase *LLVMCallBaseRef;
 
 unsigned LLVMInstructionBrGetNumSuccessors(LLVMValueRef);
 LLVMBasicBlockRef LLVMInstructionBrGetSuccessor(LLVMValueRef, unsigned);
 LLVMBasicBlockRef LLVMInstructionInvokeGetNormalDest(LLVMValueRef);
 LLVMBasicBlockRef LLVMInstructionInvokeGetUnwindDest(LLVMValueRef);
+const char *LLVMInstructionCallBaseGetCalleeName(LLVMCallBaseRef);
 DILocationRef LLVMInstructionGetDiLocation(LLVMValueRef);
 unsigned LLVMLocationGetLine(DILocationRef);
 unsigned LLVMLocationGetColumn(DILocationRef);

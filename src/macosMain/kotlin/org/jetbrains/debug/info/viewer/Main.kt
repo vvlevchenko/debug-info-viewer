@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
                                         InstructionIterator(bb).forEach { i ->
                                             val location = i.location
                                             val inlinedAt = location.inlinedAt
-                                            value.add("{${i.opcode?.beauty_name} | ${location.encodedInlinedAt}}")
+                                            value.add("{${i.beauty_name} | ${location.encodedInlinedAt}}")
                                             when (i.opcode) {
                                                 LLVMOpcode.LLVMInvoke -> {
                                                     edge(LLVMInstructionInvokeGetNormalDest(i).name!!)
@@ -112,8 +112,16 @@ fun main(args: Array<String>) {
     }
 }
 
-private val LLVMOpcode?.beauty_name: String?
-    get() = this?.run { name.drop(4).decapitalize() }
+private val LLVMValueRef?.beauty_name: String?
+    get() = this?.opcode?.run {
+        buildString {
+            append(this@run.name.drop(4).decapitalize())
+            when(this@run){
+                LLVMOpcode.LLVMInvoke, LLVMOpcode.LLVMCall -> append(' ').append(LLVMInstructionCallBasetCalleeName(this@beauty_name as CallBaseRef)?.toKString())
+                else -> {}
+            }
+        }
+    }
 val DILocationRef?.encoded: String?
     get() = this?.run{"${scope.subprogram.linkageName}|${scope.file.name}|$line:$column"}
 val DILocationRef?.encodedInlinedAt: String?

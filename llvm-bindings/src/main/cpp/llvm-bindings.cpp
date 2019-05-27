@@ -29,6 +29,7 @@ DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DILocation, DILocationRef)
 DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DILocalScope, DILocalScopeRef)
 DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DIFile, DIFileRef)
 DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DISubprogram, DISubprogramRef)
+DEFINE_SIMPLE_CONVERSION_FUNCTIONS(CallBase, LLVMCallBaseRef)
 //DEFINE_SIMPLE_CONVERSION_FUNCTIONS(DIScope, DIScopeRef)
 }
 
@@ -55,6 +56,18 @@ extern "C" {
   LLVMBasicBlockRef LLVMInstructionInvokeGetUnwindDest(LLVMValueRef ref) {
       auto instruction = llvm::unwrap<llvm::Instruction>(ref);
       return llvm::wrap(llvm::dyn_cast<llvm::InvokeInst>(instruction)->getUnwindDest());
+  }
+
+  const char *LLVMInstructionCallBasGetCalleeName(CallBaseRef ref) {
+    auto callBase = llvm::unwrap<llvm::CallBase>(ref);
+    //auto callBase = llvm::cast<llvm::CallBase>(instruction);
+    auto start = callBase->data_operands_begin();
+    auto end = callBase->data_operands_end();
+    int i = 0;
+    for (auto ci = start; ci != end; ++ci) {
+      fprintf(stderr, "%d, %d", i++, (*ci)->getType()->getTypeID());
+    }
+    return "<TODO>";
   }
 
   unsigned LLVMLocationGetLine(DILocationRef ref) {
@@ -94,7 +107,7 @@ extern "C" {
   }
 
   const char *LLVMFileGetDirectory(DIFileRef ref) {
-      return llvm::unwrap(ref)->getDirectory().data();
+    return llvm::unwrap(ref)->getDirectory().data();
   }
 } /* extern "C" */
 
