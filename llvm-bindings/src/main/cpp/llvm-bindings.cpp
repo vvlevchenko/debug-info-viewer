@@ -57,6 +57,19 @@ extern "C" {
       return llvm::wrap(llvm::dyn_cast<llvm::InvokeInst>(instruction)->getUnwindDest());
   }
 
+  const char *LLVMInstructionCallGetCalleeName(LLVMValueRef ref) {
+    auto instruction = llvm::unwrap<llvm::Instruction>(ref);
+    if (llvm::isa<llvm::InvokeInst>(instruction)) {
+       auto invoke = llvm::dyn_cast<llvm::InvokeInst>(instruction);
+       return invoke->getCalledFunction()->getName().data();
+    }
+    if (llvm::isa<llvm::CallInst>(instruction)) {
+           auto call = llvm::dyn_cast<llvm::CallInst>(instruction);
+           return call->getCalledFunction()->getName().data();
+    }
+    return "<TODO>";
+  }
+
   unsigned LLVMLocationGetLine(DILocationRef ref) {
     return llvm::unwrap(ref)->getLine();
   }
@@ -94,7 +107,7 @@ extern "C" {
   }
 
   const char *LLVMFileGetDirectory(DIFileRef ref) {
-      return llvm::unwrap(ref)->getDirectory().data();
+    return llvm::unwrap(ref)->getDirectory().data();
   }
 } /* extern "C" */
 
