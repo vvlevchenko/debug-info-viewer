@@ -41,5 +41,8 @@ fun Graph.graph(name: String, entry:String? = null, body: Graph.() -> Unit) = th
 fun Graph.node(id : String, body: Node.() -> Unit) = this.add(Node(id).also(body))
 fun Node.attribute(id: String, body:Attribute.() -> Unit) = this.add(Attribute(id).also(body))
 
-fun String.html() = replace("<", "&lt;").replace(">", "&gt;")
+fun String.html() = replace("<", "&lt;")
+    .replace(">", "&gt;")
+    .replace("{", "&#123;")
+    .replace("}", "&#125;")
 

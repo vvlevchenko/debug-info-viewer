@@ -65,7 +65,7 @@ fun main(args: Array<String>) {
                                         InstructionIterator(bb).forEach { i ->
                                             val location = i.location
                                             val inlinedAt = location.inlinedAt
-                                            value.add("{${i.beauty_name} | ${location.encodedInlinedAt}}")
+                                            value.add("{${i.beauty_name?.html()} | ${location.encodedInlinedAt?.html()}}")
                                             when (i.opcode) {
                                                 LLVMOpcode.LLVMInvoke -> {
                                                     edge(LLVMInstructionInvokeGetNormalDest(i).name!!)
@@ -95,9 +95,9 @@ fun main(args: Array<String>) {
                         appendln("\"${subgraph.key}\" -> ${(subgraph.value as Graph).entry}")
                         (subgraph.value as Graph).nodes.forEach { node ->
                             appendln(
-                                "${node.key} [ label = \"{${node.key}|${node.value.attributes["label"]?.value?.joinToString(
+                                "${node.key} [ label = \"{${node.key.html()}|${node.value.attributes["label"]?.value?.joinToString(
                                     separator = "|"
-                                )?.html()}}\"]"
+                                )}}\"]"
                             )
                             if (node.value.edges.isNotEmpty())
                                 appendln("${node.key} -> ${node.value.edges.joinToString(separator = ",")}")
